@@ -1,0 +1,21 @@
+# Virtual environment
+odoo_rag_env/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Chat history (optional - include for persistent chat)
+# chat_history.json

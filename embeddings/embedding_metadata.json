@@ -1,0 +1,13 @@
+{
+  "total_documents": 6465,
+  "embedding_dimension": 768,
+  "sample_document": {
+    "url": "https://www.odoo.com/documentation/18.0/applications/essentials.html",
+    "path_slug": "essentials",
+    "filename": "essentials.html",
+    "chunk_id": "essentials_chunk_0",
+    "content": "Odoo essentials¶ Activities Schedule activities Chatter Kanban view List view Activity view Schedule Activity form All scheduled activities Activity types Edit activity types Create new activity types Activity Settings section Next Activity section Reporting Selecting a view Graph view Pivot view Choosing measures Using the pivot view Using the graph view Search, filter, and group records Search for values Filters Preconfigured filters Custom filters Group records Comparison Favorites Odoo rich-text editor Text editor toolbar Powerbox commands Insert media Media editor toolbar Contacts Contact form Contact type Name Address Additional fields Contacts & Addresses tab Sales & Purchase tab Sales section Point Of Sale section Purchase section Misc section Accounting tab Internal Notes tab Partner Assignment tab Membership tab Activate membership Smart buttons Archive contacts Merge contacts Merge duplicate contacts Deduplicate contacts Export and import data Export data from Odoo Import da",
+    "chunk_index": 0,
+    "total_chunks": 3
+  }
+}
