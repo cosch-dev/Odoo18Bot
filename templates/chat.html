@@ -559,6 +559,7 @@
 
             // Add user message with actual image (no camera emoji)
             addMessage(message, true, [], imageDataUrl);
+            saveToHistory(message, true, []);
             
             // Clear input and remove image preview immediately
             input.value = '';
@@ -598,12 +599,15 @@
 
                 if (data.error) {
                     addMessage(`❌ Error: ${data.error}`, false);
+                    saveToHistory(`❌ Error: ${data.error}`, false, []);
                 } else {
                     // No camera emoji in AI response, just the response text
                     addMessage(data.response, false, data.sources);
+                    saveToHistory(data.response, false, data.sources || []);
                 }
             } catch (error) {
                 addMessage(`❌ Network error: ${error.message}`, false);
+                saveToHistory(`❌ Network error: ${error.message}`, false, []);
             } finally {
                 hideTyping();
                 isWaitingForResponse = false;
@@ -612,52 +616,53 @@
             }
         }
 
-        async function clearHistory() {
+        function clearHistory() {
             if (confirm('Clear all chat history?')) {
-                try {
-                    await fetch('/api/clear', { method: 'POST' });
-                    const messagesContainer = document.getElementById('messages');
-                    messagesContainer.innerHTML = `
-                        <div class="welcome">
-                            <h2>👋 Welcome to your Odoo 18.0 Certification Assistant!</h2>
-                            <p>Ask me anything about Odoo 18.0 for your certification preparation.</p>
-                            <p><em>Example: "How do I create a custom module in Odoo?"</em></p>
-                        </div>
-                    `;
-                } catch (error) {
-                    alert('Error clearing history');
-                }
+                localStorage.removeItem('odoo_chat_history');
+                const messagesContainer = document.getElementById('messages');
+                messagesContainer.innerHTML = `
+                    <div class="welcome">
+                        <h2>👋 Welcome to your Odoo 18.0 Certification Assistant!</h2>
+                        <p>Ask me anything about Odoo 18.0 for your certification preparation.</p>
+                        <p><em>Example: "How do I create a custom module in Odoo?"</em></p>
+                    </div>
+                `;
             }
         }
 
-        async function loadHistory() {
-            try {
-                const response = await fetch('/api/history');
-                const messages = await response.json();
-                
-                const messagesContainer = document.getElementById('messages');
-                messagesContainer.innerHTML = '';
-                
-                if (messages.length === 0) {
-                    messagesContainer.innerHTML = `
-                        <div class="welcome">
-                            <h2>👋 Welcome to your Odoo 18.0 Certification Assistant!</h2>
-                            <p>Ask me anything about Odoo 18.0 for your certification preparation.</p>
-                            <p><em>Example: "How do I create a custom module in Odoo?"</em></p>
-                        </div>
-                    `;
-                } else {
-                    messages.forEach(msg => {
-                        addMessage(
-                            msg.content, 
-                            msg.role === 'user', 
-                            msg.sources || [],
-                            null  // No image data from history
-                        );
-                    });
-                }
-            } catch (error) {
-                alert('Error loading history');
+        function saveToHistory(content, isUser, sources = []) {
+            const messages = JSON.parse(localStorage.getItem('odoo_chat_history') || '[]');
+            messages.push({
+                content: content,
+                isUser: isUser,
+                sources: sources,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('odoo_chat_history', JSON.stringify(messages));
+        }
+
+        function loadHistory() {
+            const messages = JSON.parse(localStorage.getItem('odoo_chat_history') || '[]');
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.innerHTML = '';
+            
+            if (messages.length === 0) {
+                messagesContainer.innerHTML = `
+                    <div class="welcome">
+                        <h2>👋 Welcome to your Odoo 18.0 Certification Assistant!</h2>
+                        <p>Ask me anything about Odoo 18.0 for your certification preparation.</p>
+                        <p><em>Example: "How do I create a custom module in Odoo?"</em></p>
+                    </div>
+                `;
+            } else {
+                messages.forEach(msg => {
+                    addMessage(
+                        msg.content, 
+                        msg.isUser, 
+                        msg.sources || [],
+                        null  // No image data from history
+                    );
+                });
             }
         }
 
